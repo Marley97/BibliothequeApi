@@ -32,6 +32,8 @@ class Livre(models.Model):
 	annee_publication = models.DateField()
 	langue = models.CharField(max_length = 50)
 	nombre_exemplaire = models.IntegerField()
+	description = models.CharField(max_length=200)
+	auteur = models.CharField(max_length=50)
 	categorie = models.ForeignKey('Categorie',on_delete = models.CASCADE)
 	prix = models.FloatField()
 
@@ -54,10 +56,16 @@ class MesLivre(models.Model):
 
 	def __str__(self):
 		return f" client :{self.client} Livres : {self.livres}"
+class Panier(models.Model):
+	id = models.AutoField(primary_key = True)
+	client = models.ForeignKey('Client',related_name = "cart_client", on_delete = models.CASCADE)
+	livres = models.ForeignKey('Livre',related_name = "cart_livre",on_delete = models.CASCADE)
+	quantite = models.IntegerField()
+	prix = models.IntegerField()
+	paye = models.BooleanField(default = False)
 
 class Vente(models.Model):
 	id = models.AutoField(primary_key = True)
-	user = models.ForeignKey('Bibliothecaire', related_name="vente_bibliothecaire", on_delete=models.CASCADE)
 	client = models.ForeignKey('Client', related_name="vente_client", on_delete=models.CASCADE)
 	livre = models.ForeignKey(Livre, related_name ="livre_vente", on_delete=models.CASCADE)
 	quantite = models.PositiveIntegerField()

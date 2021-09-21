@@ -10,6 +10,7 @@ from rest_framework.decorators import action
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from .serializers import *
+from rest_framework import generics
  
 class TokenPairView(TokenObtainPairView):
     serializer_class = TokenPairSerializer
@@ -22,7 +23,6 @@ class RegisterView(APIView):
         first_name = request.data.get('first_name')
         last_name = request.data.get('last_name')
         password = request.data.get('password')
-        email = request.data.get('email')
         adresse = request.data.get('adresse')
         telephone = request.data.get('telephone')
 
@@ -32,7 +32,6 @@ class RegisterView(APIView):
         last_name = last_name
         )
         user_obj.set_password(password)
-        user_obj.email = email
         user_obj.save()
         utilisateur_obj = Client(
         user = user_obj,
@@ -42,12 +41,35 @@ class RegisterView(APIView):
         utilisateur_obj.save()
         return Response({'status':'Success'},201)
 
+class BibliothecaireViewSet(viewsets.ModelViewSet):
+    serializer_class = BibliothecaireSerializer
+    queryset = Bibliothecaire.objects.all()
+
+class CategorieSerializerView(viewsets.ModelViewSet):
+    serializer_class = CategorieSerializer
+    queryset =  Categorie.objects.all()
+
+class LivreSerializerView(viewsets.ModelViewSet):
+    serializer_class = LivreSerializer
+    queryset = Livre.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['titre']
+
+class ClientSerializerView(viewsets.ModelViewSet):
+    serializer_class = ClientSerializer
+    queryset = Client.objects.all()
+
+class MesLivreSerializerView(viewsets.ModelViewSet):
+    serializer_class = MesLivreSerializer
+    queryset = MesLivre.objects.all()
+
+class VenteSerializerView(viewsets.ModelViewSet):
+    serializer_class = VenteSerializer
+    queryset = Vente.objects.all()
+
+class PanierSerializerView(viewsets.ModelViewSet):
+    serializer_class = PanierSerializer
+    queryset = Panier.objects.all()
 
 
 
-
-
-
-#class CategorieViewset(viewsets.ModelViewSet):
-    #serializer_class = CategorieSerializer
-    #queryset = Categorie.objects.all()
