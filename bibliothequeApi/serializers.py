@@ -17,6 +17,7 @@ class TokenPairSerializer(TokenObtainPairSerializer):
         data['last_name']= self.user.last_name
         try:
             client = Client.objects.get(user=self.user)
+            data['client_id'] = client.id
             data['adresse']=client.adresse
             data['telephone']=client.telephone
         except Exception:
@@ -104,10 +105,16 @@ class MesLivreSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class VenteSerializer(serializers.ModelSerializer):
+
   class Meta:
       model = Vente
       fields = '__all__'
 class PanierSerializer(serializers.ModelSerializer):
+    def to_representation(self,obj):
+        representation = super().to_representation(obj)
+        representation['livres'] = LivreSerializer(obj.livres,  many=False).data
+        return representation
+
     class Meta:
         model = Panier
         fields = '__all__'
